@@ -1,11 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, OneToMany } from 'typeorm';
-import { User } from '../users/user.entity';
-import { Task } from '../tasks/task.entity';
+import { Entity, Column, ObjectIdColumn, CreateDateColumn } from 'typeorm';
+import { ObjectId } from 'mongodb';
 
 @Entity()
 export class Project {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @ObjectIdColumn()
+  id: ObjectId;
 
   @Column()
   name: string;
@@ -13,11 +12,8 @@ export class Project {
   @Column({ nullable: true })
   description: string;
 
-  @ManyToOne(() => User, user => user.projects)
-  owner: User;
-
-  @OneToMany(() => Task, task => task.project)
-  tasks: Task[];
+  @Column()
+  ownerId: string; // Storing the string ID of the User
 
   @CreateDateColumn()
   createdAt: Date;

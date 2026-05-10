@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from './user.entity';
+import { User, Role } from './user.entity';
 
 @Injectable()
 export class UsersService {
@@ -11,27 +11,23 @@ export class UsersService {
   ) {}
 
   async findByEmail(email: string): Promise<User | null> {
-    return this.usersRepository.findOne({ where: { email } });
+    const user = await this.usersRepository.findOne({ where: { email } });
+    if (!user) return null;
+    return { ...user, id: user.id.toString() } as any;
   }
 
-  async findById(id: number): Promise<User | null> {
-    return this.usersRepository.findOne({ where: { id } });
+  async create(userData: Partial<User>): Promise<User> {
+    const user = this.usersRepository.create(userData);
+    const saved = await this.usersRepository.save(user);
+    return { ...saved, id: saved.id.toString() } as any;
   }
 
-  async create(user: Partial<User>): Promise<User> {
-    const newUser = this.usersRepository.create(user);
-    return this.usersRepository.save(newUser);
-  }
-
-  async findAll(): Promise<User[]> {
-    return this.usersRepository.find({ select: ['id', 'email', 'role', 'createdAt'] });
-  }
-
-  async updateRole(id: number, role: string): Promise<User | null> {
-    const user = await this.findById(id);
+  async updateRole(email: string, role: Role): Promise<User | null> {
+    const user = await this.usersRepository.findOne({ where: { email } });
     if (user) {
-      user.role = role as any;
-      return this.usersRepository.save(user);
+      user.role = role;
+      const saved = await this.usersRepository.save(user);
+      return { ...saved, id: saved.id.toString() } as any;
     }
     return null;
   }

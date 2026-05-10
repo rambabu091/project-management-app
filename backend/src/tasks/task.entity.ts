@@ -1,6 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne } from 'typeorm';
-import { Project } from '../projects/project.entity';
-import { User } from '../users/user.entity';
+import { Entity, Column, ObjectIdColumn, CreateDateColumn } from 'typeorm';
+import { ObjectId } from 'mongodb';
 
 export enum TaskStatus {
   TODO = 'TODO',
@@ -10,8 +9,8 @@ export enum TaskStatus {
 
 @Entity()
 export class Task {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @ObjectIdColumn()
+  id: ObjectId;
 
   @Column()
   title: string;
@@ -25,11 +24,11 @@ export class Task {
   })
   status: TaskStatus;
 
-  @ManyToOne(() => Project, project => project.tasks)
-  project: Project;
+  @Column()
+  projectId: string; // Storing the string ID of the Project
 
-  @ManyToOne(() => User, user => user.assignedTasks, { nullable: true })
-  assignee: User;
+  @Column({ nullable: true })
+  assigneeId: string; // Storing the string ID of the User
 
   @CreateDateColumn()
   createdAt: Date;

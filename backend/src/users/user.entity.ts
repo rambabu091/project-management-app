@@ -1,6 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToMany } from 'typeorm';
-import { Project } from '../projects/project.entity';
-import { Task } from '../tasks/task.entity';
+import { Entity, Column, ObjectIdColumn, CreateDateColumn } from 'typeorm';
+import { ObjectId } from 'mongodb';
 
 export enum Role {
   Admin = 'Admin',
@@ -9,8 +8,8 @@ export enum Role {
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @ObjectIdColumn()
+  id: ObjectId;
 
   @Column({ unique: true })
   email: string;
@@ -23,12 +22,6 @@ export class User {
     default: Role.Member,
   })
   role: Role;
-
-  @OneToMany(() => Project, project => project.owner)
-  projects: Project[];
-
-  @OneToMany(() => Task, task => task.assignee)
-  assignedTasks: Task[];
 
   @CreateDateColumn()
   createdAt: Date;

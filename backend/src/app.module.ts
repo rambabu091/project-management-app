@@ -13,12 +13,12 @@ import { Task } from './tasks/task.entity';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: process.env.DATABASE_URL ? 'postgres' : 'sqlite',
-      url: process.env.DATABASE_URL,
-      database: process.env.DATABASE_URL ? undefined : 'database.sqlite',
-      ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : undefined,
+      type: 'mongodb',
+      url: process.env.DATABASE_URL || 'mongodb://localhost:27017/project_management',
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      synchronize: true, // Auto-create collections
       entities: [User, Project, Task],
-      synchronize: true, // Auto-create tables (dev only)
     }),
     AuthModule, 
     UsersModule, 
