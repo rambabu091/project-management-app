@@ -24,6 +24,6 @@ export class TasksController {
   @Patch(':id/status')
   updateStatus(@Param('id') id: string, @Body() body: any) {
     // Both Admin and Member can update status
-    return this.tasksService.updateStatus(+id, body.status);
+    return this.tasksService.updateStatus(id, body.status);
   }
 }

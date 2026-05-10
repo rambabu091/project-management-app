@@ -15,8 +15,6 @@ import { Task } from './tasks/task.entity';
     TypeOrmModule.forRoot({
       type: 'mongodb',
       url: process.env.DATABASE_URL || 'mongodb://localhost:27017/project_management',
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
       synchronize: true, // Auto-create collections
       entities: [User, Project, Task],
     }),

@@ -13,6 +13,6 @@ export class UsersController {
     if (!user) {
       return { message: 'User not found' };
     }
-    return this.usersService.updateRole(user.id, Role.Admin);
+    return this.usersService.updateRole(user.email, Role.Admin);
   }
 }

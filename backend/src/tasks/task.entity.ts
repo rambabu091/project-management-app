@@ -22,7 +22,7 @@ export class Task {
     type: 'varchar',
     default: TaskStatus.TODO,
   })
-  status: TaskStatus;
+  status: TaskStatus = TaskStatus.TODO;
 
   @Column()
   projectId: string; // Storing the string ID of the Project

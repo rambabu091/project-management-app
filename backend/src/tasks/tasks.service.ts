@@ -24,11 +24,19 @@ export class TasksService {
     const projects = await this.projectsRepository.find();
     
     return tasks.map(task => {
-      const project = projects.find(p => p.id.toString() === task.projectId);
+      // Ensure we have string IDs for the frontend
+      const taskId = task.id ? task.id.toString() : (task as any)._id?.toString();
+      const taskProjectId = task.projectId?.toString();
+
+      const project = projects.find(p => {
+        const pid = p.id ? p.id.toString() : (p as any)._id?.toString();
+        return pid === taskProjectId;
+      });
+
       return { 
         ...task, 
-        id: task.id.toString(), // convert objectid to string for frontend
-        project: project ? { ...project, id: project.id.toString() } : null 
+        id: taskId, 
+        project: project ? { ...project, id: project.id ? project.id.toString() : (project as any)._id?.toString() } : null 
       };
     });
   }
