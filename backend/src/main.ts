@@ -3,15 +3,21 @@ import { AppModule } from './app.module';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import express from 'express';
 
-const expressApp = express();
+let cachedApp: any;
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, new ExpressAdapter(expressApp));
-  app.enableCors();
-  app.setGlobalPrefix('api');
-  await app.init();
+  if (!cachedApp) {
+    const expressApp = express();
+    const app = await NestFactory.create(AppModule, new ExpressAdapter(expressApp));
+    app.enableCors();
+    app.setGlobalPrefix('api');
+    await app.init();
+    cachedApp = expressApp;
+  }
+  return cachedApp;
 }
 
-bootstrap();
-
-export default expressApp;
+export default async function (req: any, res: any) {
+  const app = await bootstrap();
+  return app(req, res);
+}
