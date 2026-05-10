@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -14,13 +12,11 @@ import { Task } from './tasks/task.entity';
 
 @Module({
   imports: [
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', '..', 'frontend', 'dist'),
-      exclude: ['/api/(.*)'],
-    }),
     TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: 'database.sqlite',
+      type: process.env.DATABASE_URL ? 'postgres' : 'sqlite',
+      url: process.env.DATABASE_URL,
+      database: process.env.DATABASE_URL ? undefined : 'database.sqlite',
+      ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : undefined,
       entities: [User, Project, Task],
       synchronize: true, // Auto-create tables (dev only)
     }),
